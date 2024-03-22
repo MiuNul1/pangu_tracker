@@ -11,6 +11,7 @@
    ![image](https://github.com/MiuNul1/pangu_tracker/assets/119723303/1fc55bb5-fdf0-493a-a9c7-7e7fd9b81985)
    
 5.第二轮预报同理。有多少轮预报就建立多少个文件夹
+
 6.至此，你的输入文件已经全部整理好了，下面来设置脚本。
 
 ### 脚本设置
@@ -24,6 +25,8 @@
 
 ![image](https://github.com/MiuNul1/pangu_tracker/assets/119723303/1f997e57-25d5-47bf-91ab-0f292a89971d)
 
-第n轮预报的起始时间指的是第n个文件夹中output_0_upper(surface)_后面的字符串
-预报次数即盘古进行了多少次预报
-时间间隔指相邻两次预报中的时间间隔（小时）
+* 第n轮预报的起始时间指的是第n个文件夹中output_0_upper(surface)_后面的字符串
+
+* 预报次数即盘古进行了多少次预报
+
+* 时间间隔指相邻两次预报中的时间间隔（小时）
