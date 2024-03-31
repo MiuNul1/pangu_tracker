@@ -1,7 +1,5 @@
-#the third version of tracker, updates are as follows:
-#1. 可交互式路径图
-#2. 优化代码结构
-
+#= ω =  /꧂
+#让脚本不出bug的魔法
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
