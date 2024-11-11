@@ -1,37 +1,31 @@
-# pangu_tracker
-对盘古气象大模型输出的nc文件进行TC定位和追踪
+# Pangu Tracking
 
-2024.3.31更新version4,修改了besttrack 角度索引错位的bug，优化了交互标签算法，当两个路径点重合时可以将两份路径的信息全部显示在重合点上
+## 算法说明
 
-2024.3.27更新version3,操作方法和version2完全一样，但可以生成可交互式的html文件
-## 使用方法：
-### 输入设置
-1. 浏览数据集，确定你想要进行起报的时间
-2. 用盘古模型以起报时间对应的era5为输入进行预报（e.g.预报步长3h,预报次数24次）
-3. 将第一轮预报的所有output文件目录下的文件全部剪贴到data/1目录下
-4. 将用于第一轮预报的input文件改名为output_0_surface_（你的起报时间）和output_0_upper_（你的起报时间）后剪贴到data/1目录下，如下图所示(特别注意要删除.nc前的空格)
+* Pangu Tracking 是一项基于针对Pangu-Weather的输出文件进行台风定位的python脚本
 
-   ![image](https://github.com/MiuNul1/pangu_tracker/assets/119723303/1fc55bb5-fdf0-493a-a9c7-7e7fd9b81985)
-   
-5.第二轮预报同理。有多少轮预报就建立多少个文件夹
+* 本项目的算法参考了 [Bi 等，（2023）](https://doi.org/10.1038/s41586-023-06185-3)中提供的定位算法，原文如下
 
-6.至此，你的输入文件已经全部整理好了，下面来设置脚本。
+> Algorithm for tracking tropical cyclones
+>
+> We followed a classical algorithm【38】 that locates the local minimum of MSLP to track the eye of tropical cyclones. Given the starting time point and the corresponding initial position of a cyclone eye, we iteratively called for the 6-hour forecast algorithm and looked for a local minimum of MSLP that satisfies the following conditions:、
+>
+> •There is a maximum of 850 hPa relative vorticity that is larger than 5 × 10−5 within a radius of 278 km for the Northern Hemisphere, or a minimum that is smaller than −5 × 10−5 for the Southern Hemisphere. 
+>
+> •There is a maximum of thickness between 850 hPa and 200 hPa within a radius of 278 km when the cyclone is extratropical. 
+>
+> •The maximum 10-m wind speed is larger than 8 m s−1 within a radius of 278 km when the cyclone is on land. Once the cyclone’s eye is located, the tracking algorithm continued to find the next position in a vicinity of 445 km. The tracking algorithm terminated when no local minimum of MSLP is found to satisfy the above conditions. See Extended Data Fig. 8 for two tracking examples.
 
-### 脚本设置
-1.将脚本的第153行至155行全部改成你所预报的TC的信息,代码块中的格式供参考
-```
-    time_start = 2012100500 #请修改为台风生成时间 
-    time_end = 2012101912 #请修改为台风消散时间 
-    name = 'Prapiroon' #请修改为台风名称
-```
-2.运行脚本，根据提示输入数据
+* 关于该算法更详细的描述可以参考[Newsletter No. 102 - Winter 2004/05 | ECMWF](https://www.ecmwf.int/en/elibrary/78231-newsletter-no-102-winter-200405)的第8页【Tracking the cyclone】部分
+* 本项目属于南京大学大气科学学院本科生大创项目《深度学习模型对台风路径突变预报评估》的项目代码之一，由于只是本科生课题，我们对台风定位的准确性要求不高，因此忽略了上述算法中对相对涡度和厚度的检验，本项目的算法更为简单：
+  * 第一个预报时次的定位，需要给定初始场中的TC的经纬度坐标，（我们采用了CMA best track数据）在这一坐标的445km半径内寻找海平面气压最低点（MSLP),作为此时的TC位置
+  * 之后所有预报时次，以上一时次的TC位置为中心，寻找445km半径内的海平面气压最低点
+* 经过检验，本算法对在海面上的TC定位比较可靠，但对于登陆TC，建议不要使用本算法
 
-![image](https://github.com/MiuNul1/pangu_tracker/assets/119723303/1f997e57-25d5-47bf-91ab-0f292a89971d)
+## 代码说明
 
-* 第n轮预报的起始时间指的是第n个文件夹中output_0_upper(surface)_后面的字符串
+* file_path为需要定位的nc文件存放路径，建议该路径下文件以如下格式命名
 
-* 预报次数即盘古进行了多少次预报
+  ![image-20241111174050823](C:\Users\ymr\AppData\Roaming\Typora\typora-user-images\image-20241111174050823.png)
 
-* 时间间隔指相邻两次预报中的时间间隔（小时）
-
-更新于2024.3.22
+* 本项目通过读取存取CMA best track的xlsx文件来读取TC初始时刻的坐标，请自行更改坐标输入形式
