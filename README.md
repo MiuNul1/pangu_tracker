@@ -24,19 +24,13 @@
 
 ## 代码说明
 
-* file_path为需要定位的nc文件存放路径，建议该路径下文件以如下格式命名
+* file_path为需要定位的nc文件存放路径，建议该路径下文件以如下格式命名:output_{forecast_time}_{type}_{time}.nc  
+  '''
+  ├── file_path
+  │   ├──output_6_surface_2004092400.nc
+  │   ├──output_6_upper_2004092400.nc
+  │   ├──output_12_surface_2004092406.nc   
+  │   ├──output_12_surface_2004092412.nc
 
-filepath|
-
-  output_6_surface_2004092400.nc
-  
-  output_6_upper_2004092400.nc
-  
-  output_12_surface_2004092406.nc   
-  
-  output_12_surface_2004092412.nc
-  
-  ...
-  
-  output_{forecast_time}_{type}_{time}.nc  
+  '''
 * 本项目通过读取存取CMA best track的xlsx文件来读取TC初始时刻的坐标，请自行更改坐标输入形式
